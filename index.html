@@ -2,9 +2,69 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>חישוב טיפים באשראי</title>
 </head>
 <body>
+    <h1>חישוב טיפים באשראי</h1>
 
+    <!-- טופס להזנת המזומן והפרמטרים הנדרשים -->
+    <form id="tipForm" onsubmit="calculateTips(); return false;">
+        <label for="cashAmountZad">סכום מזומן לפי זד:</label>
+        <input type="number" id="cashAmountZad" required>
+        <br>
+
+        <label for="physicalCash">סכום מזומן פיזי:</label>
+        <input type="number" id="physicalCash" required>
+        <br>
+
+        <label for="creditTipsInCash">סכום טיפים אשראי במזומן:</label>
+        <input type="number" id="creditTipsInCash" required>
+        <br>
+
+        <label for="remainingInCash">סכום שישאר בקופה:</label>
+        <input type="number" id="remainingInCash" required>
+        <br>
+
+        <button type="submit">חשב</button>
+    </form>
+
+    <!-- התוצאות -->
+    <div id="results"></div>
+
+    <script>
+        function calculateTips() {
+            // קבלת ערכים מהטופס
+            const cashAmountZad = parseFloat(document.getElementById('cashAmountZad').value);
+            const physicalCash = parseFloat(document.getElementById('physicalCash').value);
+            const creditTipsInCash = parseFloat(document.getElementById('creditTipsInCash').value);
+            const remainingInCash = parseFloat(document.getElementById('remainingInCash').value);
+
+            // חישוב טיפים באשראי
+            let creditTipsTotal = cashAmountZad - physicalCash - creditTipsInCash - remainingInCash;
+
+            // עדכון טיפים באשראי אם הם פחות מ0
+            let updatedCreditTips = 0;
+            let deductedAmount = 0;
+
+            if (creditTipsTotal < 0) {
+                updatedCreditTips = creditTipsInCash + creditTipsTotal;
+                deductedAmount = -creditTipsTotal;
+                alert(`הורדנו ${deductedAmount} מהטיפים באשראי מכיוון המזומן שצריך להשאיר בקופה.`);
+            } else {
+                updatedCreditTips = creditTipsInCash;
+            }
+
+            // חישוב סכום מזומן פיזי מעודכן
+            const updatedPhysicalCash = cashAmountZad - updatedCreditTips - remainingInCash;
+
+            // עדכון התוצאות ב-DOM
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = `
+                <p>סכום מזומן פיזי פחות טיפים באשראי מעודכן לאחר חוסר: ${updatedPhysicalCash}</p>
+                <p>סכום טיפים אשראי מעודכן: ${updatedCreditTips}</p>
+            `;
+        }
+    </script>
 </body>
 </html>
